@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 14, 2025 at 10:49 AM
+-- Generation Time: Jan 30, 2025 at 04:03 PM
 -- Server version: 10.4.6-MariaDB
 -- PHP Version: 8.3.8
 
@@ -20,6 +20,100 @@ SET time_zone = "+00:00";
 --
 -- Database: `auction28`
 --
+
+DELIMITER $$
+--
+-- Functions
+--
+CREATE DEFINER=`blk`@`%` FUNCTION `LEVENSHTEIN2` (`s1` VARCHAR(255), `s2` VARCHAR(255)) RETURNS INT(11) DETERMINISTIC BEGIN
+
+    DECLARE s1_len, s2_len, i, j, c, c_temp INT;
+
+    DECLARE cost INT;
+
+    DECLARE s1_char CHAR;
+
+    DECLARE cv0, cv1 VARBINARY(256);
+
+    
+
+    SET s1_len = CHAR_LENGTH(s1);
+
+    SET s2_len = CHAR_LENGTH(s2);
+
+    IF s1_len = 0 THEN
+
+        RETURN s2_len;
+
+    END IF;
+
+    IF s2_len = 0 THEN
+
+        RETURN s1_len;
+
+    END IF;
+
+    
+
+    SET cv1 = 0x00;
+
+    SET j = 1;
+
+    WHILE j <= s2_len DO
+
+        SET cv1 = CONCAT(cv1, UNHEX(HEX(j)));
+
+        SET j = j + 1;
+
+    END WHILE;
+
+    
+
+    SET i = 1;
+
+    WHILE i <= s1_len DO
+
+        SET s1_char = SUBSTRING(s1, i, 1);
+
+        SET c = i;
+
+        SET cv0 = UNHEX(HEX(i));
+
+        SET j = 1;
+
+        WHILE j <= s2_len DO
+
+            SET c_temp = c;
+
+            SET c = CONV(HEX(SUBSTRING(cv1, j, 1)), 16, 10);
+
+            IF s1_char = SUBSTRING(s2, j, 1) THEN
+
+                SET cost = 0;
+
+            ELSE
+
+                SET cost = 1;
+
+            END IF;
+
+            SET cv0 = CONCAT(cv0, UNHEX(HEX(LEAST(c + 1, c_temp + 1, c + cost))));
+
+            SET j = j + 1;
+
+        END WHILE;
+
+        SET cv1 = cv0;
+
+        SET i = i + 1;
+
+    END WHILE;
+
+    RETURN CONV(HEX(SUBSTRING(cv1, s2_len, 1)), 16, 10);
+
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -86,6 +180,21 @@ CREATE TABLE `heroes` (
   `heroMessage` varchar(50) NOT NULL,
   `heroContent` longtext NOT NULL,
   `heroStatus` enum('activate','deactivate','suspend') NOT NULL DEFAULT 'deactivate',
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `interests`
+--
+
+CREATE TABLE `interests` (
+  `interestId` int(11) NOT NULL,
+  `interestUserId` int(11) NOT NULL,
+  `interestCategoryId` int(11) NOT NULL,
+  `interestProductType` enum('organic','hybrid','both') DEFAULT NULL,
+  `interestKeywords` varchar(255) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -216,6 +325,14 @@ ALTER TABLE `heroes`
   ADD PRIMARY KEY (`heroId`);
 
 --
+-- Indexes for table `interests`
+--
+ALTER TABLE `interests`
+  ADD PRIMARY KEY (`interestId`),
+  ADD KEY `interests_interestUserId_users_userId` (`interestUserId`),
+  ADD KEY `interests_interestCategoryId_categories_categoryId` (`interestCategoryId`);
+
+--
 -- Indexes for table `moments`
 --
 ALTER TABLE `moments`
@@ -291,6 +408,12 @@ ALTER TABLE `heroes`
   MODIFY `heroId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `interests`
+--
+ALTER TABLE `interests`
+  MODIFY `interestId` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `moments`
 --
 ALTER TABLE `moments`
@@ -343,6 +466,13 @@ ALTER TABLE `auctions`
 ALTER TABLE `bids`
   ADD CONSTRAINT `bids_ibfk_1` FOREIGN KEY (`bidAuctionId`) REFERENCES `auctions` (`auctionId`),
   ADD CONSTRAINT `bids_ibfk_2` FOREIGN KEY (`bidUserId`) REFERENCES `users` (`userId`);
+
+--
+-- Constraints for table `interests`
+--
+ALTER TABLE `interests`
+  ADD CONSTRAINT `interests_interestCategoryId_categories_categoryId` FOREIGN KEY (`interestCategoryId`) REFERENCES `categories` (`categoryId`),
+  ADD CONSTRAINT `interests_interestUserId_users_userId` FOREIGN KEY (`interestUserId`) REFERENCES `users` (`userId`);
 
 --
 -- Constraints for table `moments`

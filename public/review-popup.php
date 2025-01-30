@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Submit Review</title>
-
+  <?php include("../assets/link.html") ?>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!-- Floating Button -->
 <div class="floating-button">
-  <button id="toggleReviewForm" class="btn btn-primary">
+  <button id="toggleReviewForm" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
     <i class="bi bi-chat-left-quote-fill"></i>
   </button>
 </div>
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="reviewModalLabel">Submit Your Review</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="reviewForm">
@@ -80,24 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  $(document).ready(function () {
-  // Toggle Review Modal
-  const reviewButton = $('#toggleReviewForm');
-  const reviewModalElement = $('#reviewModal');
-  const reviewModal = new bootstrap.Modal(reviewModalElement);
-
-  reviewButton.click(function () {
-    if (reviewModalElement.hasClass('show')) {
-      // If modal is already visible, hide it and change icon
-      reviewModal.hide();
-      reviewButton.html('<i class="bi bi-chat-left-quote-fill"></i>'); // Icon when closed
-    } else {
-      // If modal is hidden, show it and change icon
-      reviewModal.show();
-      reviewButton.html('<i class="bi bi-x-circle-fill"></i>'); // Icon when open (Close icon)
-    }
-  });
-
+$(document).ready(function () {
   // Submit Review
   $('#reviewForm').on('submit', function (e) {
     e.preventDefault();
@@ -112,8 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (response.success) {
           alert(response.message);
           $('#reviewForm')[0].reset();
-          reviewModal.hide();
-          reviewButton.html('<i class="bi bi-chat-left-quote-fill"></i>'); // Reset icon when modal is closed
+          $('#reviewModal').modal('hide');
         } else {
           alert(response.message);
         }
