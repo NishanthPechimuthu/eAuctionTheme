@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <?php include_once("../assets/link.html"); ?>
-  
 </head>
 <body class="bg-light">
 
@@ -35,34 +34,36 @@
           <a class="nav-link" href="../public/add-moments.php">Add Moment</a>
         </li>
       </ul>
-      <ul class="navbar-nav ml-auto"> <!-- Ensure this pushes items to the right -->
-        <li class="nav-item dropdown">
-          <?php $userImg = getUserImg($_SESSION["userId"] ?? ""); ?>
-          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img src="../images/profiles/<?= $userImg ?>" alt="Profile" class="rounded-circle border border-dark" width="30" height="30">
-            <span class="text-secondary px-1"><?= $_SESSION["userName"]?></span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
-            <div class="d-flex align-items-center px-3 py-2">
-              <div>
-                <p class="mb-0 font-weight-bold text-dark">
-                  <?= $_SESSION["userName"] ?? "Guest" ?>
-                </p>
-                <p class="mb-0 text-muted">
-                  <?= $_SESSION["userEmail"] ?? "guest@gmail.com" ?>
-                </p>
+      <?php if (isset($_SESSION["userId"]) && $_SESSION["userId"] != null): ?>
+        <ul class="navbar-nav ml-auto"> <!-- Ensure this pushes items to the right -->
+          <li class="nav-item dropdown">
+            <?php $userImg = isset($_SESSION["userId"]) ? getUserImg($_SESSION["userId"]) : ''; ?>
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="../images/profiles/<?= $userImg ?>" alt="Profile" class="rounded-circle border border-dark" width="30" height="30">
+              <span class="text-secondary px-1"><?= $_SESSION["userName"] ?? 'Guest' ?></span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
+              <div class="d-flex align-items-center px-3 py-2">
+                <div>
+                  <p class="mb-0 font-weight-bold text-dark">
+                    <?= $_SESSION["userName"] ?? "Guest" ?>
+                  </p>
+                  <p class="mb-0 text-muted">
+                    <?= $_SESSION["userEmail"] ?? "guest@gmail.com" ?>
+                  </p>
+                </div>
               </div>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="profile.php">Profile</a>
+              <a class="dropdown-item" href="settings.php">Settings</a>
+              <div class="dropdown-divider"></div>
+              <form action="logout.php" method="post">
+                <button class="dropdown-item" name="logout">Logout</button>
+              </form>
             </div>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="profile.php">Profile</a>
-            <a class="dropdown-item" href="settings.php">Settings</a>
-            <div class="dropdown-divider"></div>
-            <form action="logout.php" method="post">
-              <button class="dropdown-item" name="logout">Logout</button>
-            </form>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      <?php endif; ?>
     </div>
   </nav>
 

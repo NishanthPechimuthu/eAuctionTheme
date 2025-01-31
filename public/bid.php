@@ -364,7 +364,7 @@ $auction_end_date = date("Y-m-d H:i:s", strtotime($auction['auctionEndDate']));
 </body>
 </html>
 <?
-  include_once("./review-popup.php");
+  include_once("./menu.php");
   include_once("./footer.php");
   ob_end_flush();
 ?>

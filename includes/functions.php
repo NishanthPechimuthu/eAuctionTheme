@@ -129,7 +129,7 @@ function getAllReviews() {
 //Get Heroes
 function getAllHeroes() {
   global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM heroes");
+    $stmt = $pdo->prepare("SELECT * FROM heroes WHERE heroStatus = 'activate'");
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }

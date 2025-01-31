@@ -42,6 +42,6 @@ isAuthenticated();
 </body>
 </html>
 <?
-  include_once("./footer.php");
-  ob_end_flush();
+  include_once("./menu.php");
+  include_once("./footer.php");  ob_end_flush();
 ?>

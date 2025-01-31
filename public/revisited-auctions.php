@@ -84,7 +84,7 @@ $auctions = getAuctionsParticipate($user_id);
 </body>
 </html>
 <?
-  include_once("./review-popup.php");
+  include_once("./menu.php");
   include_once("./footer.php");
   ob_end_flush();
 ?>

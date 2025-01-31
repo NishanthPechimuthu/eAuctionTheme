@@ -33,10 +33,10 @@
       <!-- Align Login and Register buttons to the right -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link btn btn-primary text-white m-1 fw-bold" href="./public/login.php">Login</a>
+          <a class="nav-link btn btn-primary text-white m-1 p-2 fw-bold" href="./public/login.php"> Login </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link btn btn-warning text-dark m-1 fw-bold" href="./public/register.php">Register</a>
+          <a class="nav-link btn btn-warning text-dark m-1 p-2 fw-bold" href="./public/register.php">Register</a>
         </li>
       </ul>
     </div>
