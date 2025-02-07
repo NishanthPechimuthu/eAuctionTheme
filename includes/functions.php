@@ -126,10 +126,18 @@ function getAllReviews() {
     return $result; // Return the result to be used elsewhere
 }
 
+//Get Activate Heroes
+function getActiveHeroes() {
+  global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM heroes WHERE heroStatus = 'activate'");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 //Get Heroes
 function getAllHeroes() {
   global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM heroes WHERE heroStatus = 'activate'");
+    $stmt = $pdo->prepare("SELECT * FROM heroes WHERE heroStatus <> 'suspend'");
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }

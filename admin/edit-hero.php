@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $croppedImageData = $_POST['cropped_image'] ?? null;
         $uploadDir = '../images/heroes/';
-        $uniqueName = $hero["heroImg"]; // Default to existing image name
+        $uniqueName = $hero["heroImg"]; // Keep existing image name
 
         if ($croppedImageData) {
             // Ensure the directory exists
@@ -38,16 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Decode base64 and save the image
             list(, $croppedImageData) = explode(',', $croppedImageData);
             $croppedImageData = base64_decode($croppedImageData);
-            $uniqueName = 'hero_' . uniqid() . '.webp';
-            $targetFile = $uploadDir . $uniqueName;
+            $targetFile = $uploadDir . $uniqueName; // Use old image name
 
             if (!file_put_contents($targetFile, $croppedImageData)) {
                 echo '<p class="alert alert-danger">Error: Failed to save the cropped image.</p>';
-                $uniqueName = $hero["heroImg"]; // Revert to existing image name
             }
         }
 
-        // Update the hero details in the database
+        // Update hero details in the database
         $result = updateHero($heroId, $heroTitle, $heroMessage, $heroContent, $heroStatus, $uniqueName, null);
 
         if ($result === "Hero updated successfully!") {
@@ -70,8 +68,8 @@ error_reporting(E_ALL);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Hero</title>
   <?php include_once("../assets/link.html"); ?>
-  <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/tinymce@5.10.2/tinymce.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.2/tinymce.min.js"></script>
 </head>
 <body>
   <div class="container py-5">
@@ -126,31 +124,49 @@ error_reporting(E_ALL);
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
+  <!-- Cropper.js Modal -->
+  <div class="modal fade" id="cropperModal" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Crop Image</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="cropperModalBody">
+          <!-- Image will be inserted here dynamically -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="cropImageBtn">Crop & Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
   <script>
-    // TinyMCE Initialization
     tinymce.init({
       selector: '#heroContent',
       plugins: 'lists link image code',
       toolbar: 'undo redo | bold italic | bullist numlist | code',
     });
 
-    // Image Cropping Script
-    const productImageInput = document.getElementById('productImage');
-    const croppedImageInput = document.getElementById('croppedImage');
-    const imagePreview = document.getElementById('imagePreview');
     let cropper;
-
-    productImageInput.addEventListener('change', function () {
+    document.getElementById('productImage').addEventListener('change', function () {
       const reader = new FileReader();
       reader.onload = function (e) {
-        const cropperImage = document.getElementById('cropperImage');
-        cropperImage.src = e.target.result;
-        cropper = new Cropper(cropperImage, { aspectRatio: 16 / 9 });
-        const modal = new bootstrap.Modal(cropperModal);
-        modal.show();
+        const modalBody = document.getElementById('cropperModalBody');
+        modalBody.innerHTML = `<img id="cropperImage" src="${e.target.result}" style="max-width: 100%;">`;
+        cropper = new Cropper(document.getElementById('cropperImage'), { aspectRatio: 16 / 9 });
+        new bootstrap.Modal(document.getElementById('cropperModal')).show();
       };
       reader.readAsDataURL(this.files[0]);
+    });
+
+    document.getElementById('cropImageBtn').addEventListener('click', function () {
+      document.getElementById('croppedImage').value = cropper.getCroppedCanvas().toDataURL('image/webp');
+      document.getElementById('imagePreview').src = cropper.getCroppedCanvas().toDataURL();
+      bootstrap.Modal.getInstance(document.getElementById('cropperModal')).hide();
     });
   </script>
 </body>

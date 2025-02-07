@@ -1,10 +1,8 @@
 <?php
-// Database connection file
-
-$host = 'localhost';
-$dbname = 'eauction';
-$username = 'root';   // Update as per your database username
-$password = '';       // Update as per your database password
+$host = '0.0.0.0';
+$dbname = 'auction28';
+$username = 'root';
+$password = 'root';
 $port = '8080';
 date_default_timezone_set('Asia/Kolkata');
 try {

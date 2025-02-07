@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </p>
                                 </td>
                                 <td>
-                                    <a href="view-hero.php?id=<?= $hero['heroId'] ?>" class="btn btn-info btn-sm fw-bold text-white align-items-center">View</a>
+                                    <a href="hero-content.php?id=<?= base64_encode($hero['heroId'] )?>" class="btn btn-info btn-sm fw-bold text-white align-items-center">View</a>
                                 </td>
                                 <td>
                                     <a href="edit-hero.php?heroId=<?= htmlspecialchars($hero['heroId']) ?>" class="btn btn-warning btn-sm fw-bold text-dark">Edit</a>

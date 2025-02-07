@@ -1,95 +1,47 @@
-<style>
-    /* Custom Carousel Styles */
-    .carousel-image-wrapper {
-        position: relative;
-        overflow: hidden;
-        max-height: 90vh;
-    }
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<?php
+include("./header.php");
+$heroes = getAllHeroes();
+?>
 
-    .carousel-image-wrapper::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 40%;
-        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
-    }
+<!-- Carousel Structure -->
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
 
-    .carousel-caption {
-        bottom: auto;
-        padding: 2rem;
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 15px;
-        backdrop-filter: blur(5px);
-    }
+    <!-- Carousel Inner Content -->
+    <div class="carousel-inner">
+        <?php foreach ($heroes as $index => $hero): ?>
+            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                <div class="carousel-image-wrapper position-relative overflow-hidden">
+                    <img src="./images/heroes/<?= htmlspecialchars($hero['heroImg']) ?>" class="d-block w-100 img-fluid" alt="<?= htmlspecialchars($hero['heroTitle']) ?>" style="object-fit: cover; height: 100vh;">
+                    <div class="carousel-caption d-flex justify-content-center align-items-center position-absolute top-50 start-50 translate-middle w-100 text-center">
+                        <div>
+                            <h5 class="text-white"><?= htmlspecialchars($hero['heroTitle']) ?></h5>
+                            <p class="text-white"><?= htmlspecialchars($hero['heroMessage']) ?></p>
+                            <p><a href="hero-content.php?id=<?= base64_encode($hero['heroId']) ?>" class="btn btn-warning mt-3">Learn More</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
 
-    .carousel-indicators [data-bs-target] {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin: 0 8px;
-        border: 2px solid #fff;
-        background-color: transparent;
-    }
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    .carousel-indicators .active {
-        background-color: #fff;
-    }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-        width: 5%;
-    }
-
-    /* Responsive Text Sizing */
-    .carousel-caption h5 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .carousel-caption p {
-        font-size: 1.2rem;
-        line-height: 1.5;
-    }
-
-    /* Mobile Optimization */
-    @media (max-width: 768px) {
-        .carousel-image-wrapper {
-            max-height: 60vh;
-        }
-
-        .carousel-caption {
-            padding: 1rem;
-            width: 90%;
-        }
-
-        .carousel-caption h5 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .carousel-caption p {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .btn-warning {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
-        }
-    }
-
-    /* Hover Effects */
-    .btn-warning {
-        transition: all 0.3s ease;
-        border: none;
-        padding: 0.75rem 1.5rem;
-    }
-
-    .btn-warning:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the carousel
+        var myCarousel = new bootstrap.Carousel(document.getElementById('carouselExampleIndicators'), {
+            interval: 5000, // 5 seconds interval
+            wrap: true // Ensure the carousel cycles continuously
+        });
+    });
+</script>
+</body>
+</html>
