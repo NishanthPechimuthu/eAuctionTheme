@@ -344,7 +344,7 @@ $auction_end_date = date("Y-m-d H:i:s", strtotime($auction['auctionEndDate']));
   </table>
 
 <?php if ($is_highest_bidder && $has_ended): ?>
-    <h3 class="mt-4">Payment Instructions</h3>
+    <h3 id="paymentSession" class="mt-4">Payment Instructions</h3>
     <p>
         Please pay <strong>&#8377;&nbsp;<?= htmlspecialchars($highest_bid) ?></strong>
     </p>
