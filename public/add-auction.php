@@ -128,10 +128,6 @@ error_reporting(E_ALL);
                   <a class="dropdown-item d-flex align-items-center" href="#"
                     data-value="<?= htmlspecialchars($category['categoryName']) ?>"
                     data-id="<?= htmlspecialchars($category['categoryId']) ?>">
-                    <img src="../images/categories/<?= htmlspecialchars($category['categoryImg']) ?>"
-                    alt="<?= htmlspecialchars($category['categoryName']) ?>"
-                    class="me-2"
-                    style="width: 24px; height: 24px; object-fit: cover; border-radius: 50%;">
                     <?= htmlspecialchars($category['categoryName']) ?>
                   </a>
                 </li>
@@ -298,7 +294,7 @@ error_reporting(E_ALL);
 </html>
 
 <?
-  include_once("./menu.php");
+  include_once("./auction-chatbot.php");
   include_once("./footer.php");
   ob_end_flush();
 ?>

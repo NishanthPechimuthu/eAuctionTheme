@@ -42,7 +42,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["email"])){
       // Generate activation link dynamically
       $token = bin2hex(random_bytes(16));
       if (createUserActivateToken($user['userId'], $token)) {
-          $activationLink = "https://eagri.ct.ws/eAuction/public/activate-user.php?user=" . $user['userId'] . "&token=" . $token;
+          $activationLink = "http://localhost/eAuction/public/activate-user.php?user=" . $user['userId'] . "&token=" . $token;
           $mail->Body = "
             <html>
             <head>

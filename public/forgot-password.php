@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       // Generate reset link dynamically
       $token = bin2hex(random_bytes(16));
       if (createPassResetToken($user['userId'], $token)) {
-        $resetLink = "https://eagri.ct.ws/eAuction/public/reset-password.php?user=" . $user['userId'] . "&token=" . $token;
+        $resetLink = "http://localhost/eAuction/public/reset-password.php?user=" . $user['userId'] . "&token=" . $token;
         $mail->Body = "
           <html>
           <head>
