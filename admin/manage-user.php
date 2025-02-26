@@ -8,36 +8,60 @@ isAuthenticatedAsAdmin();
 $users = getAllUsers();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (isset($_POST["delete"])) {
-        deleteUser($_POST["userId"], $_POST["userEmail"]);
-        header("Location: manage-user.php");
-        exit(); // Ensure exit after header redirect
-    }
+  if (isset($_POST["delete"])) {
+    deleteUser($_POST["userId"], $_POST["userEmail"]);
+    header("Location: manage-user.php");
+    exit(); // Ensure exit after header redirect
+  }
 
-    if (isset($_POST["suspend"])) {
-        if (suspendUser($_POST["userId"])) {
-            header("Location: manage-user.php");
-            exit(); // Ensure exit after header redirect
-        } else {
-            echo '<p class="alert alert-danger alert-dismissible fade show d-flex align-items-center" 
+  if (isset($_POST["suspend"])) {
+    if (suspendUser($_POST["userId"])) {
+      header("Location: manage-user.php");
+      exit(); // Ensure exit after header redirect
+    } else {
+      echo '<p class="alert alert-danger alert-dismissible fade show d-flex align-items-center" 
                    role="alert" data-bs-dismiss="alert" aria-label="Close" 
                    style="white-space: nowrap; max-width: 100%; overflow-y: auto;">
                    Error: User not suspended
                   </p>';
-        }
     }
+  }
 }
 
-ob_end_flush(); // End buffering and flush output
+ob_end_flush();
+
+// End buffering and flush output
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Manage Users</title>
-    <?php include_once("../assets/link.html"); ?>
+    <?php include_once "../assets/link.html"; ?>
     <link href="../assets/styles.css" rel="stylesheet" />
     <style>
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f0f0f0; 
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #ADFF2F, #FFD700);
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #90EE90, #FFA500);
+}
         td {
             height: 50px;
             line-height: 50px;
@@ -117,39 +141,65 @@ ob_end_flush(); // End buffering and flush output
                     <?php
                     $counter = 1;
                     foreach ($users as $user) {
-                        echo "<tr>
+                      echo "<tr>
                                 <td>{$counter}</td>
-                                <td><a href='view-profile.php?id=".base64_encode($user['userId']) ."' target='_blank' class='text-dark'>{$user['userName']}</a></td>
+                                <td><a href='view-profile.php?id=" .
+                        base64_encode($user["userId"]) .
+                        "' target='_blank' class='text-dark'>{$user["userName"]}</a></td>
                                 <td>
-<a href='view-profile.php?id=".base64_encode($user['userId']) ."' target='_blank' class='text-dark'> <img src='../images/profiles/" . htmlspecialchars($user['userProfileImg']) . "' 
+<a href='view-profile.php?id=" .
+                        base64_encode($user["userId"]) .
+                        "' target='_blank' class='text-dark'> <img src='../images/profiles/" .
+                        htmlspecialchars($user["userProfileImg"]) .
+                        "' 
                                            alt='User Profile' class='rounded-1 border border-dark' 
                                            width='50' height='50'>
                       </a>
                                 </td>
-                                <td>" . ($user['userFirstName'] ?? 'NULL') . "</td>
-                                <td>" . ($user['userLastName'] ?? 'NULL') . "</td>
-                                <td>" . ("<a href='tel:".$user['userPhone']."' class='text-dark text-decoration-none' >".$user['userPhone'] ?? 'NULL' ."</a>") . "</td>
-                                <td><a href='mailto:".$user['userEmail']."' class='text-dark text-decoration-none' >".$user['userEmail']."</a></td>
-                                <td>" . ($user['userAddress'] ?? 'NULL') . "</td>
-                                <td>" . ($user['userAccountNo']??'NULL') . "</td>
+                                <td>" .
+                        ($user["userFirstName"] ?? "NULL") .
+                        "</td>
+                                <td>" .
+                        ($user["userLastName"] ?? "NULL") .
+                        "</td>
+                                <td>" .
+                        ("<a href='tel:" .
+                          $user["userPhone"] .
+                          "' class='text-dark text-decoration-none' >" .
+                          $user["userPhone"] ??
+                          "NULL" . "</a>") .
+                        "</td>
+                                <td><a href='mailto:" .
+                        $user["userEmail"] .
+                        "' class='text-dark text-decoration-none' >" .
+                        $user["userEmail"] .
+                        "</a></td>
+                                <td>" .
+                        ($user["userAddress"] ?? "NULL") .
+                        "</td>
+                                <td>" .
+                        ($user["userAccountNo"] ?? "NULL") .
+                        "</td>
                                 <td>
-                                    <a class='btn btn-primary fw-bold' href='./view-profile.php?id=" . base64_encode($user['userId']) . "'>View</a>
+                                    <a class='btn btn-primary fw-bold' href='./view-profile.php?id=" .
+                        base64_encode($user["userId"]) .
+                        "'>View</a>
                                 </td>
                                 <td>
                                     <form method='POST'>
-                                        <input type='hidden' value='{$user['userId']}' name='userId'/>
+                                        <input type='hidden' value='{$user["userId"]}' name='userId'/>
                                         <input class='btn btn-warning fw-bold' type='submit' value='Suspend' name='suspend'/>
                                     </form>
                                 </td>
                                 <td>
                                     <form method='POST'>
-                                        <input type='hidden' value='{$user['userId']}' name='userId'/>
-                                        <input type='hidden' value='{$user['userEmail']}' name='userEmail'/>
+                                        <input type='hidden' value='{$user["userId"]}' name='userId'/>
+                                        <input type='hidden' value='{$user["userEmail"]}' name='userEmail'/>
                                         <input class='btn btn-danger fw-bold' type='submit' value='Delete' name='delete'/>
                                     </form>
                                 </td>
                               </tr>";
-                        $counter++;
+                      $counter++;
                     }
                     ?>
                 </tbody>
@@ -157,8 +207,8 @@ ob_end_flush(); // End buffering and flush output
         </div>
     </div>
     <div class="row">
-      <?php include("./registration-chart.php"); ?>
-      <?php include("./user-status-chart.php"); ?>
+      <?php include "./registration-chart.php"; ?>
+      <?php include "./user-status-chart.php"; ?>
     </div>
 </div>
 
@@ -175,4 +225,4 @@ ob_end_flush(); // End buffering and flush output
 <?
   include("./footer.php");
   ob_end_flush(); // End buffering and flush output
-?>
+?> ?> ?>

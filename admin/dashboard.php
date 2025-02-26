@@ -19,6 +19,28 @@ $users = getAllUsers();
     <title>Admin Dashboard</title>
     <?php include("../assets/link.html"); ?>
     <style>
+    /* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f0f0f0; 
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #ADFF2F, #FFD700);
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #90EE90, #FFA500);
+}
         td {
             height: 50px;
             line-height: 50px;
