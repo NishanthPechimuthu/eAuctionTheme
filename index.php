@@ -8,6 +8,19 @@
       <link rel="icon" type="image/x-icon" href="./images/logo/favicon.ico"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <style>
+      :root {
+        --primary-color: #4CAF50 !important; /* Agriculture Green */
+        --primary-hover-color: #45a049 !important; /* Darker green for hover */
+        --secondary-color: #FFC107 !important; /* Auction Gold */
+        --secondary-hover-color: #ffca28 !important; /* Lighter gold for hover */
+        --dark-color: #212529 !important;
+        --light-color: #F8F9FA !important;
+        --card-bg-color: #e8f5e9 !important; /* Light green background for cards */
+        --card-hover-bg-color: #c8e6c9 !important; /* Lighter green for hover */
+        --btn-text-color: #ffffff !important;
+    }
+    </style>
     <?php include("./assets/link.html"); ?>
     <link rel="stylesheet" href="./assets/css/home-style.css">
     <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
