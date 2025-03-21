@@ -2,16 +2,17 @@
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
       body {
-        background-color: #f4e1d2 !important; /* Sandy beige */
+        background-color: #f4e1d2 !important;
       }
-      /* Carousel Styles */
       .carousel-image-wrapper {
         position: relative;
         overflow: hidden;
-        max-height: 100vh; /* Full viewport height */
+        max-height: 100vh;
       }
+      /* Fixed Overlay: Less Dark */
       .carousel-image-wrapper::after {
         content: '';
         position: absolute;
@@ -19,67 +20,81 @@
         left: 0;
         right: 0;
         height: 40%;
-        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%);
+        z-index: 2; 
+      }
+      .carousel-inner {
+        position: relative;
+        z-index: 1; 
       }
       .carousel-caption {
         background: rgba(0, 0, 0, 0.5);
         border-radius: 15px;
-        backdrop-filter: blur(5px);
         transition: transform 0.3s ease, opacity 0.3s ease;
+        z-index: 10;
+        position: relative;
+        pointer-events: auto;
       }
       .carousel-caption h5 {
-        color: #ffffff; /* White */
+        color: #ffffff;
         font-size: 2.5rem;
         font-weight: 700;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
       }
       .carousel-caption p {
-        color: #ffffff; /* White */
+        color: #ffffff;
         font-size: 1.2rem;
         line-height: 1.5;
       }
+      .btn-container {
+        z-index: 11;
+        position: relative;
+      }
       .btn-warning {
-        background-color: #ffca28 !important; /* Golden yellow */
-        color: #3e2723 !important; /* Dark brown text */
+        background-color: #ffca28 !important;
+        color: #3e2723 !important;
         border: none;
         padding: 0.75rem 1.5rem;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 12;
+        position: relative;
       }
       .btn-warning:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        background-color: #ffd54f !important; /* Lighter yellow */
+        background-color: #ffd54f !important;
       }
-      /* Custom Prev/Next Icons */
+      /* Ensuring Image Clarity */
+      .carousel-item img {
+        object-fit: cover;
+        height: 100vh;
+        width: 100%;
+        z-index: 1;
+      }
       .carousel-control-prev,
       .carousel-control-next {
         width: 5%;
         opacity: 0.7;
         transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 10;
       }
       .carousel-control-prev:hover,
       .carousel-control-next:hover {
         opacity: 1;
         transform: scale(1.1);
       }
-      .carousel-control-prev-icon,
-      .carousel-control-next-icon {
-        display: none; /* Hide default icons */
-      }
       .carousel-control-prev::before,
       .carousel-control-next::before {
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        color: #689f38; /* Lime green */
+        font-family: "bootstrap-icons";
+        color: #689f38;
         font-size: 2rem;
       }
       .carousel-control-prev::before {
-        content: "\f053"; /* fa-chevron-left */
+        content: "\f284";
       }
       .carousel-control-next::before {
-        content: "\f054"; /* fa-chevron-right */
+        content: "\f285";
       }
-      /* Responsive Adjustments */
       @media (max-width: 768px) {
         .carousel-image-wrapper {
           max-height: 60vh;
@@ -109,26 +124,25 @@ include("./header.php");
 $heroes = getAllHeroes();
 ?>
 
-<!-- Carousel Structure -->
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-    <!-- Carousel Inner Content -->
     <div class="carousel-inner">
         <?php foreach ($heroes as $index => $hero): ?>
-            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?> animate__animated animate__fadeIn">
-                <div class="carousel-image-wrapper position-relative overflow-hidden">
-                    <img src="./images/heroes/<?= htmlspecialchars($hero['heroImg']) ?>" class="d-block w-100 img-fluid" alt="<?= htmlspecialchars($hero['heroTitle']) ?>" style="object-fit: cover; height: 100vh;">
+            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                <div class="carousel-image-wrapper position-relative">
+                    <img src="./images/heroes/<?= htmlspecialchars($hero['heroImg']) ?>" class="d-block img-fluid" alt="<?= htmlspecialchars($hero['heroTitle']) ?>">
                     <div class="carousel-caption d-flex justify-content-center align-items-center position-absolute top-50 start-50 translate-middle w-100 text-center">
                         <div>
-                            <h5 class="text-white"><?= htmlspecialchars($hero['heroTitle']) ?></h5>
-                            <p class="text-white"><?= htmlspecialchars($hero['heroMessage']) ?></p>
-                            <p><a href="hero-content.php?id=<?= base64_encode($hero['heroId']) ?>" class="btn btn-warning mt-3">Learn More</a></p>
+                            <h5><?= htmlspecialchars($hero['heroTitle']) ?></h5>
+                            <p><?= htmlspecialchars($hero['heroMessage']) ?></p>
+                            <div class="btn-container">
+                                <a href="hero-content.php?id=<?= base64_encode($hero['heroId']) ?>" class="btn btn-warning mt-3">Learn More</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         <?php endforeach; ?>
     </div>
-    <!-- Custom Prev/Next Controls -->
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
       <span class="visually-hidden">Previous</span>
     </button>
@@ -137,24 +151,22 @@ $heroes = getAllHeroes();
     </button>
 </div>
 
-<!-- Bootstrap JS and Popper.js -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the carousel
     var myCarousel = new bootstrap.Carousel(document.getElementById('carouselExampleIndicators'), {
-      interval: 5000, // 5 seconds interval
-      wrap: true // Ensure the carousel cycles continuously
+      interval: 20000,
+      wrap: true
     });
 
-    // GSAP animations for carousel items
     gsap.utils.toArray('.carousel-item').forEach((item, index) => {
       if (item.classList.contains('active')) {
         gsap.from(item.querySelector('.carousel-image-wrapper img'), {
           duration: 1,
           opacity: 0,
-          scale: 1.1,
+          scale: 1.05,
           ease: 'power2.out',
           delay: 0.5
         });
@@ -181,44 +193,6 @@ $heroes = getAllHeroes();
         });
       }
     });
-
-    // GSAP hover effects for button and controls (desktop only)
-    if (window.innerWidth > 991) {
-      document.querySelectorAll('.btn-warning').forEach(btn => {
-        btn.addEventListener('mouseenter', () => {
-          gsap.to(btn, { 
-            duration: 0.3, 
-            scale: 1.05, 
-            ease: 'power1.out' 
-          });
-        });
-        btn.addEventListener('mouseleave', () => {
-          gsap.to(btn, { 
-            duration: 0.3, 
-            scale: 1, 
-            ease: 'power1.out' 
-          });
-        });
-      });
-      document.querySelectorAll('.carousel-control-prev, .carousel-control-next').forEach(control => {
-        control.addEventListener('mouseenter', () => {
-          gsap.to(control, { 
-            duration: 0.3, 
-            scale: 1.1, 
-            opacity: 1, 
-            ease: 'power1.out' 
-          });
-        });
-        control.addEventListener('mouseleave', () => {
-          gsap.to(control, { 
-            duration: 0.3, 
-            scale: 1, 
-            opacity: 0.7, 
-            ease: 'power1.out' 
-          });
-        });
-      });
-    }
   });
 </script>
 </body>
