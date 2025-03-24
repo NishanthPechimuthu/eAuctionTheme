@@ -42,7 +42,7 @@ $reviews = getReviews();
             max-width: 800px;
             margin: auto;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background: #e8f5e9; /* Light green */
+            background: #e3f2fd; /* Light green */
             border-radius: 10px;
             transition: box-shadow 0.3s ease;
         }

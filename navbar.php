@@ -97,7 +97,7 @@
           <a class="nav-link btn btn-primary text-white m-1 p-2 fw-bold" href="./public/login.php"> Login </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link btn btn-warning text-white m-1 p-2 fw-bold" href="./public/register.php">Register</a>
+          <a style="background: #E57373 !important; color: #ffff !important;" class="nav-link btn btn-warning text-white m-1 p-2 fw-bold" href="./public/register.php">Register</a>
         </li>
       </ul>
     </div>
