@@ -1,11 +1,10 @@
 <?php
-ob_start(); // Start output buffering
-session_start(); // Start the session
+ob_start();
+session_start();
 include("header.php");
 include("navbar.php");
 
 $categories = getCategories();
-// Call the authentication function
 isAuthenticated();
 $AccountNo = getUserAccountNo($_SESSION["userId"]);
 if ($AccountNo === NULL) {
@@ -13,7 +12,6 @@ if ($AccountNo === NULL) {
   exit();
 }
 
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = htmlspecialchars(trim($_POST['title']));
   $product_type = $_POST["product_type"];
@@ -53,9 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo '<p class="alert alert-danger alert-dismissible fade show" role="alert">Error: No cropped image data received.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></p>';
   }
 }
-
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 ?>
 
 <!DOCTYPE html>
@@ -68,20 +63,25 @@ error_reporting(E_ALL);
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
   <style>
     body {
-      background-color: #f4e1d2 !important; /* Sandy beige */
-      color: #3e2723; /* Dark brown */
+      background-color: #f4e1d2 !important;
+      color: #3e2723;
       font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
     }
     .container {
       margin-top: 80px;
       padding-bottom: 40px;
+      position: relative;
+      z-index: 10;
     }
     .card-main {
       background-color: #ffffff;
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
       transition: box-shadow 0.3s ease;
+      position: relative;
+      z-index: 20;
     }
     .card-main:hover {
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -95,6 +95,8 @@ error_reporting(E_ALL);
     }
     .card-body {
       padding: 20px;
+      position: relative;
+      z-index: 30;
     }
     .form-label {
       color: #3e2723;
@@ -104,6 +106,8 @@ error_reporting(E_ALL);
       border-radius: 8px;
       border: 1px solid #689f38;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      pointer-events: auto !important;
+      z-index: 40;
     }
     .form-control:focus {
       border-color: #ffca28;
@@ -120,6 +124,8 @@ error_reporting(E_ALL);
       font-weight: 600;
       color: #ffffff;
       transition: transform 0.3s ease, background 0.3s ease;
+      pointer-events: auto !important;
+      z-index: 50;
     }
     .btn-primary:hover {
       background: linear-gradient(45deg, #8bc34a, #a4d007);
@@ -133,6 +139,8 @@ error_reporting(E_ALL);
       font-weight: 600;
       color: #ffffff;
       transition: transform 0.3s ease, background 0.3s ease;
+      pointer-events: auto !important;
+      z-index: 50;
     }
     .btn-secondary:hover {
       background: linear-gradient(45deg, #5d4037, #8d6e63);
@@ -141,31 +149,53 @@ error_reporting(E_ALL);
     .alert {
       border-radius: 8px;
       transition: opacity 0.3s ease;
+      z-index: 60;
     }
     #imagePreview {
       transition: opacity 0.3s ease;
     }
+    /* Modal and Cropper Styling */
     .modal {
-      z-index: 1200; /* Well above navbar */
+      z-index: 99999 !important; /* Highest z-index */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
       display: flex !important;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      padding-top: 0 !important;
-      padding-bottom: 0 !important;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
     }
     .modal-backdrop {
-      z-index: 1190; /* Below modal */
+      z-index: 99990 !important; /* Below modal but above everything else */
     }
     .modal-dialog {
-      max-width: 80%;
-      margin: 0 auto; /* Center horizontally */
+      width: 100%;
+      max-width: 90vw;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99995 !important;
     }
     .modal-content {
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       background-color: #ffffff;
       width: 100%;
+      max-width: 800px;
+      height: auto;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      z-index: 99996 !important;
+    }
+    .modal-header {
+      z-index: 99998 !important;
     }
     .modal-body {
       padding: 20px;
@@ -175,6 +205,8 @@ error_reporting(E_ALL);
       min-height: 60vh;
       max-height: 80vh;
       overflow-y: auto;
+      position: relative;
+      z-index: 99997 !important;
     }
     #cropperContainer {
       width: 100%;
@@ -185,6 +217,8 @@ error_reporting(E_ALL);
       justify-content: center;
       align-items: center;
       position: relative;
+      pointer-events: auto !important;
+      z-index: 99998 !important;
     }
     #cropperImage {
       max-width: 100%;
@@ -193,23 +227,34 @@ error_reporting(E_ALL);
       margin: auto;
     }
     .cropper-container {
-      width: 100%;
-      height: 100%;
-      position: relative;
+      width: 100% !important;
+      height: 100% !important;
+      position: absolute !important;
+      top: 0;
+      left: 0;
       pointer-events: auto !important;
-      z-index: 1210; /* Above modal content */
+      z-index: 99999 !important;
     }
     .cropper-crop-box, .cropper-view-box {
       margin: auto;
       pointer-events: auto !important;
-      z-index: 1220; /* Above cropper container */
+      z-index: 100000 !important;
+    }
+    .cropper-face, .cropper-line, .cropper-point {
+      pointer-events: auto !important;
+      z-index: 100001 !important;
+      background-color: #689f38 !important; /* Agri green for handles */
+      opacity: 1 !important;
+      width: 10px !important;
+      height: 10px !important;
     }
     .cropper-modal {
       pointer-events: none !important;
-      z-index: 1205; /* Below crop box */
+      z-index: 99994 !important;
     }
     .modal-footer {
-      z-index: 1230; /* Above all cropper elements */
+      z-index: 99998 !important;
+      position: relative;
     }
     .modal-footer .btn {
       pointer-events: auto !important;
@@ -225,7 +270,7 @@ error_reporting(E_ALL);
         padding: 6px 15px;
       }
       .modal-dialog {
-        max-width: 90%;
+        max-width: 95vw;
       }
       .modal-body {
         padding: 10px;
@@ -304,33 +349,35 @@ error_reporting(E_ALL);
           </div>
           <div class="mb-3">
             <label for="productImage" class="form-label">Product Image</label>
-            <input type="file" id="productImage" name="productImage" accept="image/jpeg, image/png, image/webp" required class="form-control">
+            <input type="file" id="productImage" name="productImage" accept="image/*" required class="form-control">
             <input type="hidden" name="cropped_image" id="croppedImage">
           </div>
           <div class="mb-3">
             <label for="imagePreview" class="form-label">Image Preview</label>
             <img id="imagePreview" class="img-fluid rounded-1 border border-2 border-dark" style="max-width: 100%; height: auto; display: none;">
           </div>
+          
           <!-- Cropper Modal -->
-          <div id="cropperModal" class="modal fade" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+          <div id="cropperModal" class="modal fade" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="cropperModalLabel">Crop Image</h5>
+                  <h5 class="modal-title">Crop Image</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <div id="cropperContainer">
-                    <img id="cropperImage" style="max-width: 100%; display: block;">
+                    <img id="cropperImage" style="max-width: 100%;">
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" id="cropButton" class="btn btn-primary">Crop</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="button" id="cropButton" class="btn btn-primary">Crop & Save</button>
                 </div>
               </div>
             </div>
           </div>
+          
           <div class="d-flex justify-content-between">
             <input type="submit" class="btn btn-primary" value="Add Product">
             <input type="reset" class="btn btn-secondary" value="Clear">
@@ -344,8 +391,8 @@ error_reporting(E_ALL);
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // GSAP animations
+    document.addEventListener('DOMContentLoaded', function() {
+      // GSAP Animations
       gsap.from('.card-main', {
         duration: 2,
         opacity: 0,
@@ -353,6 +400,7 @@ error_reporting(E_ALL);
         ease: 'power4.out',
         delay: 0.5
       });
+      
       gsap.from('.mb-3', {
         duration: 2,
         opacity: 0,
@@ -361,6 +409,7 @@ error_reporting(E_ALL);
         ease: 'power4.out',
         delay: 0.7
       });
+      
       gsap.from('.d-flex .btn', {
         duration: 2,
         opacity: 0,
@@ -370,136 +419,82 @@ error_reporting(E_ALL);
         delay: 1
       });
 
-      // Hover effects (desktop only)
-      if (window.innerWidth > 991) {
-        document.querySelectorAll('.form-control').forEach(input => {
-          input.addEventListener('mouseenter', () => {
-            gsap.to(input, {
-              duration: 0.3,
-              scale: 1.02,
-              boxShadow: '0 0 5px rgba(255, 202, 40, 0.5)',
-              ease: 'power1.out'
-            });
-          });
-          input.addEventListener('mouseleave', () => {
-            gsap.to(input, {
-              duration: 0.3,
-              scale: 1,
-              boxShadow: 'none',
-              ease: 'power1.out'
-            });
-          });
-        });
-      }
-
-      // Form logic
-      const auctionForm = document.getElementById('auctionForm');
+      // Cropper Functionality
       const productImageInput = document.getElementById('productImage');
-      const cropperModal = document.getElementById('cropperModal');
+      const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
       const cropperImage = document.getElementById('cropperImage');
       const cropButton = document.getElementById('cropButton');
       const croppedImageInput = document.getElementById('croppedImage');
       const imagePreview = document.getElementById('imagePreview');
-
       let cropper = null;
 
-      // Form submission validation
-      auctionForm.addEventListener('submit', function (event) {
-        const categorySelect = document.getElementById('category');
-        if (!categorySelect.value) {
-          alert('Please select a category.');
-          event.preventDefault();
-        }
-        if (!croppedImageInput.value) {
-          alert('Please upload and crop an image.');
-          event.preventDefault();
-        }
-      });
-
-      // Product image input change
-      productImageInput.addEventListener('change', function () {
-        if (this.files && this.files[0]) {
+      productImageInput.addEventListener('change', function(e) {
+        if (e.target.files && e.target.files.length > 0) {
           const reader = new FileReader();
-          reader.onload = function (e) {
-            cropperImage.src = e.target.result;
-            const modal = new bootstrap.Modal(cropperModal, {
-              backdrop: 'static',
-              keyboard: false
-            });
-            modal.show();
+          reader.onload = function(event) {
+            cropperImage.src = event.target.result;
+            cropperModal.show();
           };
-          reader.readAsDataURL(this.files[0]);
+          reader.readAsDataURL(e.target.files[0]);
         }
       });
 
-      // Initialize Cropper when modal is fully shown
-      cropperModal.addEventListener('shown.bs.modal', function () {
+      document.getElementById('cropperModal').addEventListener('shown.bs.modal', function() {
         if (cropper) {
           cropper.destroy();
         }
+        
         cropper = new Cropper(cropperImage, {
           aspectRatio: 1,
           viewMode: 1,
           autoCropArea: 0.8,
           responsive: true,
           scalable: true,
-          rotatable: true,
           zoomable: true,
           movable: true,
           cropBoxMovable: true,
           cropBoxResizable: true,
-          background: false,
+          background: true,
           center: true,
-          data: {
-            x: (cropperImage.naturalWidth - 500) / 2,
-            y: (cropperImage.naturalHeight - 500) / 2,
-            width: 500,
-            height: 500
-          },
-          ready() {
-            console.log('Cropper is ready');
-            // Ensure cropper container is interactive
-            const cropperContainer = document.querySelector('.cropper-container');
-            if (cropperContainer) {
-              cropperContainer.style.pointerEvents = 'auto';
-              cropperContainer.style.zIndex = '1210';
-            }
-            // Ensure buttons are clickable
-            const modalFooter = document.querySelector('.modal-footer');
-            if (modalFooter) {
-              modalFooter.style.zIndex = '1230';
-            }
+          ready: function() {
+            // Ensure interactivity
+            const cropperElements = document.querySelectorAll('.cropper-container, .cropper-crop-box, .cropper-face, .cropper-line, .cropper-point');
+            cropperElements.forEach(el => {
+              el.style.pointerEvents = 'auto';
+              el.style.zIndex = '100000';
+            });
+            // Center crop box
+            const containerData = this.cropper.getContainerData();
+            const cropBoxSize = Math.min(containerData.width, containerData.height) * 0.8;
+            this.cropper.setCropBoxData({
+              left: (containerData.width - cropBoxSize) / 2,
+              top: (containerData.height - cropBoxSize) / 2,
+              width: cropBoxSize,
+              height: cropBoxSize
+            });
           }
         });
       });
 
-      // Crop button action
-      cropButton.addEventListener('click', function () {
+      cropButton.addEventListener('click', function() {
         if (cropper) {
           const canvas = cropper.getCroppedCanvas({
             width: 500,
             height: 500,
             imageSmoothingQuality: 'high'
           });
+          
           if (canvas) {
             const croppedDataUrl = canvas.toDataURL('image/webp');
             croppedImageInput.value = croppedDataUrl;
             imagePreview.src = croppedDataUrl;
             imagePreview.style.display = 'block';
-            cropper.destroy();
-            cropper = null;
-            const modal = bootstrap.Modal.getInstance(cropperModal);
-            modal.hide();
-          } else {
-            console.error('Failed to generate cropped canvas');
+            cropperModal.hide();
           }
-        } else {
-          console.error('Cropper not initialized');
         }
       });
 
-      // Clean up Cropper on modal hide
-      cropperModal.addEventListener('hidden.bs.modal', function () {
+      document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function() {
         if (cropper) {
           cropper.destroy();
           cropper = null;
