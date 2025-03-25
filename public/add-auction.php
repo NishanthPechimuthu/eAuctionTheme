@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                role="alert" data-bs-dismiss="alert"
                aria-label="Close"
                style="white-space:nowrap; max-width: 100%; overflow-y: auto;">
-                               Error: No cropped image data received.
+               Error: No cropped image data received.
               </p>
         ';
   }
@@ -104,30 +104,33 @@ error_reporting(E_ALL);
       padding: 15px;
       border-bottom: none;
     }
-#cropperModal .modal-dialog {
-  max-width: 90vw; /* Adjust modal width */
-}
-
-#cropperModal .modal-body {
-  height: 80vh; /* Ensure the cropper takes up 80% of viewport height */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden; /* Prevent overflow */
-}
-
-#cropperImage {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain; /* Ensures the image is fully visible */
-}
+    #cropperModal .modal-dialog {
+      max-width: 90vw; /* Adjust modal width */
+    }
+    #cropperModal .modal-body {
+      height: 75vh; /* Changed to 75vh as requested */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden; /* Prevent overflow */
+    }
+    #cropperImage {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain; /* Ensures the image is fully visible */
+    }
+    #imagePreview {
+      max-width: 100%;
+      height: auto;
+      max-height: 500px; /* Increased preview size */
+    }
   </style>
 </head>
 <body>
   <div class="container py-5 mt-5">
     <div class="card mb-4">
       <div class="card-header">
-        <i class="fa fa-gavel"></i>&nbsp;
+        <i class="fa fa-gavel"></i> 
         Add Auction
       </div>
       <div class="card-body">
@@ -160,29 +163,27 @@ error_reporting(E_ALL);
                 <?php endforeach; ?>
               </ul>
               <?php else : ?>
-              <p>
-                No categories available.
-              </p>
+              <p>No categories available.</p>
               <?php endif; ?>
               <input type="hidden" name="category" id="selectedCategory" required>
             </div>
           </div>
           <div class="mb-3">
             <label for="product_type" class="form-label">Product Type</label>
-          <select id="product_type" name="product_type" class="form-control" required>
-            <option value="" disabled selected>Select</option>
-            <option value="organic">ORGANIC</option>
-            <option value="hybrid">HYBRID</option>
-          </select>
+            <select id="product_type" name="product_type" class="form-control" required>
+              <option value="" disabled selected>Select</option>
+              <option value="organic">ORGANIC</option>
+              <option value="hybrid">HYBRID</option>
+            </select>
           </div>
           <div class="mb-3">
             <label for="product_quantity" class="form-label">Quantity</label>
-            <input type="number" id="product_quantity" name="product_quantity"  class="form-control">
+            <input type="number" id="product_quantity" name="product_quantity" class="form-control">
           </div>
           <div class="mb-3">
             <label for="product_unit" class="form-label">Quantity Type</label>
             <select id="product_unit" name="product_unit" class="form-control" required>
-            <option value="" disabled selected>Select</option>
+              <option value="" disabled selected>Select</option>
               <option value="kg">Kg</option>
               <option value="ton">Ton</option>
               <option value="nos">Nos</option>
@@ -217,7 +218,7 @@ error_reporting(E_ALL);
           <!-- Preview of cropped image -->
           <div class="mb-3">
             <label for="imagePreview" class="form-label">Image Preview</label>
-            <img id="imagePreview" class="img-fluid rounded-1 border border-2 border-dark" style="max-width: 100%; height: auto; display: none;">
+            <img id="imagePreview" class="img-fluid rounded-1 border border-2 border-dark" style="display: none;">
           </div>
 
           <!-- Cropper Modal -->
@@ -253,12 +254,12 @@ error_reporting(E_ALL);
       const cropperImage = document.getElementById('cropperImage');
       const cropButton = document.getElementById('cropButton');
       const croppedImageInput = document.getElementById('croppedImage');
-      const imagePreview = document.getElementById('imagePreview'); // Image preview element
+      const imagePreview = document.getElementById('imagePreview');
 
       let cropper;
       let modal;
 
-      // Category selection
+      // Category selection (restored from working version)
       categoryItems.forEach(item => {
         item.addEventListener('click', function() {
           const selectedCategory = this.getAttribute('data-value');
@@ -276,51 +277,46 @@ error_reporting(E_ALL);
       });
 
       // Product image input change
-      productImageInput.addEventListener('change',
-        function () {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            cropperImage.src = e.target.result;
-            if (cropper) {
-              cropper.destroy();
-            }
-            cropper = new Cropper(cropperImage, {
-              aspectRatio: 1,
-              viewMode: 2,
-              responsive: true,
-              scalable: true,
-              rotatable: true,
-            });
-            modal = new bootstrap.Modal(cropperModal); // Initialize modal
-            modal.show(); // Show modal
-          };
-          reader.readAsDataURL(this.files[0]);
-        });
+      productImageInput.addEventListener('change', function () {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          cropperImage.src = e.target.result;
+          if (cropper) {
+            cropper.destroy();
+          }
+          cropper = new Cropper(cropperImage, {
+            aspectRatio: 1,
+            viewMode: 2,
+            responsive: true,
+            scalable: true,
+            rotatable: true,
+          });
+          modal = new bootstrap.Modal(cropperModal);
+          modal.show();
+        };
+        reader.readAsDataURL(this.files[0]);
+      });
 
       // Crop button action
-      cropButton.addEventListener('click',
-        function () {
-          const canvas = cropper.getCroppedCanvas({
-            width: 500,
-            height: 500
-          });
-          croppedImageInput.value = canvas.toDataURL('image/webp'); // Save the cropped image in hidden input
-
-          // Show the preview in the form
-          imagePreview.src = canvas.toDataURL('image/webp');
-          imagePreview.style.display = 'block'; // Make the preview visible
-
-          modal.hide(); // Close the modal
-          cropper.destroy();
-          cropper = null;
+      cropButton.addEventListener('click', function () {
+        const canvas = cropper.getCroppedCanvas({
+          width: 1000,  // Increased from 500 to 1000
+          height: 1000  // Increased from 500 to 1000
         });
+        croppedImageInput.value = canvas.toDataURL('image/webp');
+        imagePreview.src = canvas.toDataURL('image/webp');
+        imagePreview.style.display = 'block';
+        modal.hide();
+        cropper.destroy();
+        cropper = null;
+      });
     });
   </script>
 </body>
 </html>
 
-<?
-  include_once("./menu.php");
+<?php
+  include_once("./auction-chatbot.php");
   include_once("./footer.php");
   ob_end_flush();
 ?>

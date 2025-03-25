@@ -113,12 +113,13 @@ if (session_status() === PHP_SESSION_NONE) {
       z-index: 1060 !important; /* Higher than navbar to ensure visibility */
       position: absolute; /* Ensure it pops out */
       top: 100%; /* Below the toggle */
+      left: 0;
       min-width: 12rem; /* Slightly wider */
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Deeper shadow */
       border-radius: 8px; /* Softer corners */
       opacity: 0; /* Start hidden for animation */
       transform: translateY(-10px); /* Start slightly above */
-      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth transition */
+      transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
     }
     .dropdown-menu.show {
       opacity: 1; /* Fully visible */
@@ -170,25 +171,6 @@ if (session_status() === PHP_SESSION_NONE) {
       }
       .navbar-nav.ml-auto .nav-item {
         margin-left: 15px; /* Add spacing between profile items if more are added */
-      }
-      /* Fix profile dropdown positioning */
-      .dropdown-menu-right {
-        right: 0; /* Align to the right edge of the toggle */
-        left: auto; /* Prevent stretching */
-        top: calc(100% + 5px); /* Position below the toggle with slight offset */
-        transform: translateX(0) translateY(-10px); /* Start slightly above */
-      }
-      .dropdown-menu-right.show {
-        transform: translateX(0) translateY(0); /* Slide into place */
-      }
-      /* Ensure dropdown stays within viewport */
-      .dropdown-menu-right::before {
-        content: '';
-        position: absolute;
-        top: -10px;
-        right: 10px;
-        border: 5px solid transparent;
-        border-bottom-color: #3e2723; /* Match border color */
       }
     }
 
@@ -252,8 +234,7 @@ if (session_status() === PHP_SESSION_NONE) {
           <a class="nav-link" href="../public/auctions.php">Home</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" roleම: true
-          role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Auction
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">

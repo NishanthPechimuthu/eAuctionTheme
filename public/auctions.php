@@ -22,10 +22,16 @@ $auctions = getActiveAuctions();
       background-color: #f4e1d2 !important; /* Sandy beige */
       color: #3e2723; /* Dark brown */
       font-family: 'Arial', sans-serif; /* Cleaner typography */
+      margin: 0; /* Reset default margin */
+      padding-bottom: 100px; /* Add padding to prevent footer overlap */
+      min-height: 100vh; /* Ensure body takes full viewport height */
+      display: flex;
+      flex-direction: column;
     }
     .container {
       margin-top: 80px; /* Space for fixed navbar */
       padding-bottom: 40px;
+      flex: 1; /* Allow container to grow and push footer down */
     }
     .card-main {
       background-color: #ffffff; /* White */
@@ -60,9 +66,13 @@ $auctions = getActiveAuctions();
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
     .auction-card img {
-      height: 180px; /* Fixed height */
-      object-fit: cover;
-      width: 100%;
+      max-height: 400px; /* Set max height to 300px as requested */
+      max-width: 400px; /* Set max width to 300px as requested */
+      width: 100%; /* Ensure it scales within the card */
+      height: auto; /* Maintain aspect ratio */
+      object-fit: cover; /* Ensure the image fits nicely */
+      display: block; /* Remove any inline spacing */
+      margin: 0 auto; /* Center the image horizontally */
       border-bottom: 2px solid #689f38; /* Green accent */
       transition: transform 0.3s ease;
     }
@@ -123,9 +133,18 @@ $auctions = getActiveAuctions();
       transform: scale(1.05);
       color: #ffffff;
     }
+    /* Footer Adjustment */
+    footer {
+      margin-top: auto; /* Push footer to the bottom */
+      width: 100%;
+      z-index: 1000; /* Ensure footer is below other content */
+    }
     @media (max-width: 767px) {
       .auction-card img {
-        height: 150px; /* Smaller on mobile */
+        max-height: 200px; /* Smaller max height on mobile */
+        max-width: 100%; /* Ensure it fits the card width */
+        width: 100%;
+        height: auto;
       }
       .auction-card .card-title {
         font-size: 1.1rem;
@@ -199,7 +218,7 @@ $auctions = getActiveAuctions();
         delay: 0.5
       });
 
-      // Animate individual auction cards (fixing the target)
+      // Animate individual auction cards
       gsap.from('.auction-card', {
         duration: 2.5,
         opacity: 0,
