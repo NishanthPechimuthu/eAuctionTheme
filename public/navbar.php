@@ -11,87 +11,131 @@ if (session_status() === PHP_SESSION_NONE) {
   <link rel="icon" type="image/x-icon" href="../images/logo/favicon.ico"> 
   <?php include_once("../assets/link.html"); ?>
   <style>
-    /* Page background (sandalwood/sandy beige) */
+    /* Remove default body margin and add padding to account for fixed navbar */
     body {
       background-color: #f4e1d2 !important; /* Sandy beige */
+      margin: 0 !important; /* Remove default margin to prevent navbar offset */
+      padding-top: 54px !important; /* Add padding to prevent content from being hidden under navbar */
     }
 
     /* Navbar styling */
     .navbar {
-      background-color: #ffffff !important; /* White */
-      transition: all 0.3s ease-in-out;
-      z-index: 1030; /* Bootstrap default for fixed-top */
+      background-color: #f4e1d2 !important; /* Sandy beige */
+      border-bottom: 2px solid #3e2723 !important; /* Brown bottom border */
+      transition: box-shadow 0.5s ease-in-out; /* Transition for shadow */
+      z-index: 1050 !important; /* Higher than most elements */
     }
     .navbar.scrolled {
-      background-color: #bcbcbc !important; /* Light gray when scrolled */
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+      background-color: #f4e1d2 !important; /* Same background when scrolled */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important; /* Add shadow when scrolled */
     }
+
+    /* Nav links styling with underline animation on hover */
     .nav-link {
-      color: #3e2723 !important; /* Dark brown for agri theme */
-      transition: transform 0.3s ease, color 0.3s ease;
+      color: #3e2723 !important; /* Dark brown */
+      position: relative; /* For underline effect */
+      transition: color 0.4s ease, transform 0.4s ease; /* Smoother transition */
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: #f59e0b; /* Mustard yellow underline */
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%; /* Underline grows on hover */
     }
     .nav-link:hover {
-      color: #ffca28 !important; /* Golden yellow on hover */
-      transform: scale(1.1); /* Slight growth effect */
+      color: #f59e0b !important; /* Mustard yellow on hover */
+      transform: scale(1.05); /* Subtle scale */
     }
+
+    /* Navbar brand (logo) styling */
     .navbar-brand img {
       transition: transform 0.4s ease;
     }
     .navbar-brand:hover img {
-      transform: rotate(15deg) scale(1.2); /* Logo spins and grows */
+      transform: rotate(10deg) scale(1.1); /* Subtle rotation and scale */
     }
+
+    /* Buttons styling */
     .btn-primary {
-      background-color: #689f38 !important; /* Lime green */
-      border-color: #689f38 !important;
-      transition: transform 0.3s ease, background-color 0.3s ease;
+      background-color: #2f855a !important; /* Forest green */
+      border-color: #2f855a !important;
+      transition: background-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
     }
     .btn-primary:hover {
-      background-color: #8bc34a !important; /* Lighter green */
-      transform: scale(1.05); /* Subtle growth */
+      background-color: #38a169 !important; /* Lighter forest green */
+      transform: scale(1.03); /* Subtle scale */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Shadow on hover */
     }
     .btn-warning {
-      background-color: #e57373 !important; /* Warm coral red */
-      color: #ffffff !important; /* White text for contrast */
-      border-color: #e57373 !important;
-      transition: transform 0.3s ease, background-color 0.3s ease;
+      background-color: #c05621 !important; /* Terracotta */
+      color: #ffffff !important; /* White text */
+      border-color: #c05621 !important;
+      transition: background-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
     }
     .btn-warning:hover {
-      background-color: #ff8a80 !important; /* Lighter coral */
-      transform: scale(1.05);
+      background-color: #d97706 !important; /* Lighter terracotta */
+      transform: scale(1.03); /* Subtle scale */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Shadow on hover */
     }
 
     /* Smooth collapse transition */
     .navbar-collapse {
-      overflow: visible; /* Prevent clipping of dropdowns */
+      overflow: visible !important; /* Allow dropdowns to overflow */
+      position: relative; /* Ensure dropdowns position relative to this */
     }
     .navbar-collapse.collapsing {
-      transition: opacity 0.3s ease-in-out;
+      transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
     }
     .navbar-collapse.show {
       opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Ensure navbar stays at the top */
+    .navbar.fixed-top {
+      top: 0 !important;
+      position: fixed;
+      width: 100%;
+      z-index: 1050 !important; /* High z-index */
     }
 
     /* Dropdown menu styling */
     .dropdown-menu {
-      background-color: #ffffff; /* White */
-      border: 1px solid #689f38; /* Lime green border */
-      z-index: 9999; /* Very high to ensure it’s on top */
+      background-color: #f3e8d6 !important; /* Light beige */
+      border: 1px solid #3e2723; /* Dark brown border */
+      z-index: 1060 !important; /* Higher than navbar to ensure visibility */
       position: absolute; /* Ensure it pops out */
-      top: 100%; /* Position below the toggle */
+      top: 100%; /* Below the toggle */
       left: 0;
-      min-width: 10rem;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      min-width: 12rem; /* Slightly wider */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Deeper shadow */
+      border-radius: 8px; /* Softer corners */
+      opacity: 0; /* Start hidden for animation */
+      transform: translateY(-10px); /* Start slightly above */
+      transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+    }
+    .dropdown-menu.show {
+      opacity: 1; /* Fully visible */
+      transform: translateY(0); /* Slide into place */
     }
     .dropdown-item {
-      color: #3e2723; /* Dark brown */
-      transition: background-color 0.3s ease, color 0.3s ease;
+      color: #3e2723 !important; /* Dark brown */
+      transition: background-color 0.3s ease, color 0.3s ease, padding-left 0.3s ease;
     }
     .dropdown-item:hover {
-      background-color: #f4e1d2; /* Sandy beige */
-      color: #ffca28; /* Golden yellow */
+      background-color: #e2d9c8 !important; /* Slightly darker beige */
+      color: #f59e0b !important; /* Mustard yellow */
+      padding-left: 1.5rem; /* Slight indent on hover */
     }
     .dropdown-divider {
-      border-color: rgba(104, 159, 56, 0.2); /* Subtle lime green */
+      border-color: rgba(62, 39, 35, 0.2); /* Subtle brown */
     }
     .dropdown-toggle img {
       transition: transform 0.3s ease;
@@ -99,14 +143,77 @@ if (session_status() === PHP_SESSION_NONE) {
     .dropdown-toggle:hover img {
       transform: scale(1.1); /* Slight growth for profile image */
     }
-    /* Ensure dropdown visibility on mobile */
+    /* Transparent dropdown arrow */
+    .dropdown-toggle::after {
+      border: none !important; /* Remove default border */
+      background: transparent !important; /* Transparent background */
+      content: '\f078'; /* Font Awesome chevron-down */
+      font-family: "Font Awesome 6 Free"; /* Use Font Awesome */
+      font-weight: 900; /* Solid icon weight */
+      color: #3e2723; /* Dark brown */
+      vertical-align: middle;
+      margin-left: 5px;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+    .dropdown-toggle:hover::after {
+      color: #f59e0b; /* Mustard yellow on hover */
+      transform: rotate(180deg); /* Flip arrow up */
+    }
+    .dropdown-toggle.show::after {
+      transform: rotate(180deg); /* Flip arrow up when open */
+    }
+
+    /* Profile segment alignment on desktop */
+    @media (min-width: 992px) {
+      .navbar-nav.ml-auto {
+        margin-left: auto !important; /* Push to the far right */
+        margin-right: 20px !important; /* Add some spacing from the edge */
+      }
+      .navbar-nav.ml-auto .nav-item {
+        margin-left: 15px; /* Add spacing between profile items if more are added */
+      }
+    }
+
+    /* Mobile and Tablet View */
     @media (max-width: 991px) {
+      .navbar-collapse {
+        background-color: #f3e8d6 !important; /* Light beige */
+        padding: 15px; /* More padding */
+        border-radius: 8px; /* Softer corners */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      }
+      .navbar-nav .nav-item {
+        background-color: #ede4d3 !important; /* Slightly darker beige */
+        margin: 8px 0; /* Spacing between items */
+        border-radius: 5px; /* Softer corners */
+        transition: background-color 0.3s ease;
+      }
+      .navbar-nav .nav-item:hover {
+        background-color: #e2d9c8 !important; /* Darker on hover */
+      }
+      .navbar-nav .nav-link {
+        padding: 12px 20px !important; /* Larger touch targets */
+        color: #3e2723 !important; /* Consistent text color */
+      }
+      .navbar-nav .nav-link:hover {
+        color: #f59e0b !important; /* Hover effect */
+      }
       .dropdown-menu {
-        position: static !important;
+        position: static !important; /* Full width on mobile */
         width: 100%;
         border: none;
         box-shadow: none;
-        z-index: 9999; /* Still high on mobile */
+        z-index: 1060 !important; /* Still high */
+        background-color: #f3e8d6 !important; /* Match collapse */
+        opacity: 1; /* Always visible when shown */
+        transform: none; /* No transform on mobile */
+        transition: none; /* No transition on mobile */
+      }
+      .dropdown-item {
+        padding: 10px 20px; /* Consistent padding */
+      }
+      .dropdown-toggle::after {
+        float: right; /* Align arrow to the right on mobile */
       }
     }
   </style>
@@ -177,10 +284,20 @@ if (session_status() === PHP_SESSION_NONE) {
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
 
   <!-- Navbar Animation Scripts -->
   <script>
-    // 1. Navbar background transition on scroll
+    // 1. Navbar entrance animation
+    gsap.from('.navbar', {
+      duration: 0.8,
+      y: -60,
+      opacity: 0,
+      ease: 'power3.out',
+      delay: 0.2
+    });
+
+    // 2. Navbar box-shadow transition on scroll
     $(window).scroll(function() {
       if ($(this).scrollTop() > 50) {
         $('.navbar').addClass('scrolled');
@@ -189,58 +306,97 @@ if (session_status() === PHP_SESSION_NONE) {
       }
     });
 
-    // 2. GSAP animation for navbar items on page load
+    // 3. GSAP animation for navbar items on page load
     gsap.from('.navbar-nav .nav-item', {
-      duration: 1,
-      y: -30,
+      duration: 0.8,
+      y: -20,
       opacity: 0,
-      stagger: 0.2,
-      ease: 'back.out(1.7)', // Springy, growth-like effect
-      delay: 0.5
+      stagger: 0.15,
+      ease: 'power3.out',
+      delay: 0.6
     });
 
-    // 3. Animate collapse menu with GSAP (Mobile/Tablet Fix)
+    // 4. Animate collapse menu with GSAP
     const $collapse = $('#navbarNav');
     $collapse.on('show.bs.collapse', function() {
       gsap.fromTo(this, 
-        { opacity: 0, y: -20 }, 
+        { opacity: 0, y: -30, scale: 0.95 }, 
         { 
           duration: 0.5, 
           opacity: 1, 
           y: 0, 
-          ease: 'power2.out' 
+          scale: 1,
+          ease: 'power3.out' 
         }
       );
     });
     $collapse.on('hide.bs.collapse', function() {
       gsap.to(this, { 
-        duration: 0.3, 
+        duration: 0.4, 
         opacity: 0, 
-        y: -20, 
-        ease: 'power2.in' 
+        y: -30, 
+        scale: 0.95,
+        ease: 'power3.in' 
       });
     });
 
-    // 4. GSAP hover effect for nav links (desktop only)
-    if (window.innerWidth > 991) { 
+    // 5. GSAP animation for dropdown menu
+    $('.dropdown').each(function() {
+      const $dropdown = $(this);
+      const $menu = $dropdown.find('.dropdown-menu');
+      
+      $dropdown.on('show.bs.dropdown', function() {
+        gsap.fromTo($menu, 
+          { opacity: 0, y: -10, scale: 0.95 }, 
+          { 
+            duration: 0.4, 
+            opacity: 1, 
+            y: 0, 
+            scale: 1, 
+            ease: 'power2.out' 
+          }
+        );
+        gsap.from($menu.find('.dropdown-item'), {
+          duration: 0.3,
+          opacity: 0,
+          y: 10,
+          stagger: 0.1,
+          ease: 'power2.out',
+          delay: 0.1
+        });
+      });
+      
+      $dropdown.on('hide.bs.dropdown', function() {
+        gsap.to($menu, { 
+          duration: 0.3, 
+          opacity: 0, 
+          y: -10, 
+          scale: 0.95,
+          ease: 'power2.in' 
+        });
+      });
+    });
+
+    // 6. GSAP hover effect for nav links (desktop only)
+    if (window.innerWidth > 991) {
       document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('mouseenter', () => {
           if (!link.classList.contains('dropdown-toggle') || !$(link).parent().hasClass('show')) {
             gsap.to(link, { 
-              duration: 0.3, 
-              scale: 1.1, 
-              color: '#ffca28', 
-              ease: 'power1.out' 
+              duration: 0.4, 
+              scale: 1.05, 
+              color: '#f59e0b', 
+              ease: 'power2.out' 
             });
           }
         });
         link.addEventListener('mouseleave', () => {
           if (!link.classList.contains('dropdown-toggle') || !$(link).parent().hasClass('show')) {
             gsap.to(link, { 
-              duration: 0.3, 
+              duration: 0.4, 
               scale: 1, 
               color: '#3e2723', 
-              ease: 'power1.out' 
+              ease: 'power2.out' 
             });
           }
         });

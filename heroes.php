@@ -27,15 +27,15 @@
         height: 100%; /* Ensure it fills the carousel */
         background: transparent !important; /* Prevent black background */
       }
-      /* Fixed Overlay: Less Dark */
+      /* Fixed Overlay: Reduced Opacity */
       .carousel-image-wrapper::after {
         content: '';
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
-        height: 20%; /* Reduced overlay height */
-        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 100%); /* Lighter overlay */
+        height: 10%; /* Kept from previous adjustment */
+        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.05) 100%); /* Reduced opacity from 0.1 to 0.05 */
         z-index: 2;
       }
       .carousel-caption {
@@ -125,8 +125,8 @@
           min-height: 100vh; /* Match the wrapper's height */
         }
         .carousel-image-wrapper::after {
-          height: 15%; /* Further reduce overlay on mobile */
-          background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 100%); /* Even lighter overlay */
+          height: 10%; /* Kept from previous adjustment */
+          background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.025) 100%); /* Reduced opacity from 0.05 to 0.025 */
         }
         .carousel-caption {
           padding: 1rem;
