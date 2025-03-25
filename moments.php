@@ -62,7 +62,7 @@ $moments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
 
-  <div class="container py-5 mt-5">
+  <div class="container py-5">
     <div class="layout-container">
       <?php foreach ($moments as $moment): ?>
         <img src="./images/moments/<?= htmlspecialchars($moment['momentImg']) ?>" alt="" class="animate__animated animate__fadeInUp">

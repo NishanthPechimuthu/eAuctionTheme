@@ -6,11 +6,26 @@
     <style>
       body {
         background-color: #f4e1d2 !important;
+        margin: 0; /* Ensure no default body margin */
+      }
+      /* Ensure the carousel and its parent containers take full height */
+      .carousel.slide {
+        height: 100vh; /* Full height for desktop */
+        background: transparent !important; /* Prevent black background */
       }
       .carousel-image-wrapper {
         position: relative;
         overflow: hidden;
-        max-height: 100vh;
+        height: 100vh; /* Full height for desktop */
+        background: transparent !important; /* Prevent black background */
+        padding: 0; /* Remove any padding */
+        margin: 0; /* Remove any margins */
+      }
+      .carousel-inner {
+        position: relative;
+        z-index: 1;
+        height: 100%; /* Ensure it fills the carousel */
+        background: transparent !important; /* Prevent black background */
       }
       /* Fixed Overlay: Less Dark */
       .carousel-image-wrapper::after {
@@ -19,13 +34,9 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: 40%;
-        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%);
-        z-index: 2; 
-      }
-      .carousel-inner {
-        position: relative;
-        z-index: 1; 
+        height: 20%; /* Reduced overlay height */
+        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 100%); /* Lighter overlay */
+        z-index: 2;
       }
       .carousel-caption {
         background: rgba(0, 0, 0, 0.5);
@@ -64,12 +75,13 @@
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         background-color: #ffd54f !important;
       }
-      /* Ensuring Image Clarity */
+      /* Ensure Image Fills the Container */
       .carousel-item img {
         object-fit: cover;
-        height: 100vh;
+        height: 100%; /* Fill the wrapper's height */
         width: 100%;
         z-index: 1;
+        display: block; /* Ensure the image behaves as a block element */
       }
       .carousel-control-prev,
       .carousel-control-next {
@@ -95,9 +107,26 @@
       .carousel-control-next::before {
         content: "\f285";
       }
+      /* Mobile View Adjustments */
       @media (max-width: 768px) {
+        .carousel.slide {
+          height: 100vh; /* Full height for mobile */
+        }
         .carousel-image-wrapper {
-          max-height: 60vh;
+          height: 100vh; /* Full height for mobile to ensure the image fills the space */
+          max-height: none; /* Remove max-height constraint */
+          background: transparent !important; /* Prevent black background */
+        }
+        .carousel-inner {
+          height: 100%; /* Ensure it fills the carousel */
+        }
+        .carousel-item img {
+          height: 100%; /* Fill the wrapper's height */
+          min-height: 100vh; /* Match the wrapper's height */
+        }
+        .carousel-image-wrapper::after {
+          height: 15%; /* Further reduce overlay on mobile */
+          background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 100%); /* Even lighter overlay */
         }
         .carousel-caption {
           padding: 1rem;

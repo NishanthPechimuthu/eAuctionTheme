@@ -22,6 +22,8 @@
       body {
         background-color: #f4e1d2 !important; /* Sandy beige */
         color: #3e2723; /* Dark brown text */
+        margin: 0 !important; /* Remove default margin to prevent navbar offset */
+        padding-top: 54px !important; /* Add padding to prevent content from being hidden under navbar (54px is the navbar height) */
       }
       /* Section Headers */
       .section-header h2 {
