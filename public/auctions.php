@@ -29,7 +29,6 @@ $auctions = getActiveAuctions();
       flex-direction: column;
     }
     .container {
-      margin-top: 80px; /* Space for fixed navbar */
       padding-bottom: 40px;
       flex: 1; /* Allow container to grow and push footer down */
     }
